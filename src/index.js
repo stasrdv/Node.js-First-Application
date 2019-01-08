@@ -1,16 +1,26 @@
 let express = require("express");
+
 let app = express();
+
 let path = require("path");
 
+let bodyParser = require("body-parser");
+
+// Routes
 let personRoute = require("./routes/person");
+let customerRoute = require("./routes/customer");
+
+// body-parser
+app.use(bodyParser.json());
 
 // Middleware
-app.use((req, res, next) => {
-  console.log(`${new Date().toString()} =>  ${req.originalUrl}`);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(`${new Date().toString()} =>  ${req.originalUrl}`, req.body);
+//   next();
+// });
 
 app.use(personRoute);
+app.use(customerRoute);
 app.use(express.static("public"));
 
 // Handler for 404 - Not found
