@@ -1,4 +1,5 @@
 let expres = require("express");
+let cors = require("cors");
 
 let app = expres();
 
@@ -11,7 +12,7 @@ let registerRoute = require("./routes/register");
 let loginRoute = require("./routes/log-in");
 
 // body-parser
-app.use(bodyParser.json());
+app.use(bodyParser.json(), cors());
 // apply route tp app
 app.use(registerRoute, loginRoute);
 
