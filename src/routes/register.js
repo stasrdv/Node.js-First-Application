@@ -23,15 +23,11 @@ router.post("/register", (req, res) => {
         const model = new UserModel(req.body);
         // Hash Password
         model.password = passwordHash.generate(model.password);
-        console.log(model);
-
         model.save().then(doc => {
           if (!doc || doc.length == 0) {
             return res.status(500).send(doc);
           } else {
-            return res
-              .status(201)
-              .send(`You have created a new account ${doc.email}`);
+            return res.status(201).send(doc.email);
           }
         });
       }
