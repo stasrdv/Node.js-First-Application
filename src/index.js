@@ -7,12 +7,13 @@ let path = require("path");
 let bodyParser = require("body-parser");
 
 // Routes
-let loginRoute = require("./routes/register");
+let registerRoute = require("./routes/register");
+let loginRoute = require("./routes/log-in");
 
 // body-parser
 app.use(bodyParser.json());
 // apply route tp app
-app.use(loginRoute);
+app.use(registerRoute, loginRoute);
 
 app.use(expres.static("public"));
 
