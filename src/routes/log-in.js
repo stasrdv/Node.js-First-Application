@@ -13,12 +13,19 @@ router.post("/logIn", (req, res) => {
     email: req.body.email
   })
     .then(doc => {
-      if (passwordHash.verify(req.body.password, doc.password)) {
-        return res.status(200).send(doc.email);
+      console.log(doc);
+
+      if (!doc) {
+        return res
+          .status(400)
+          .send(`Couldn't find your account ${req.body.email}`);
       } else {
-        res.status(400).send(`Incorrect password`);
+        return passwordHash.verify(req.body.password, doc.password)
+          ? res.status(200).json(doc.email)
+          : res.status(400).send(`Incorrect password`);
       }
     })
+
     .catch(err => {
       res.status(500).json(err);
     });
