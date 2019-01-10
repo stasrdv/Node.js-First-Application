@@ -22,9 +22,8 @@ router.post("/register", (req, res) => {
       } else {
         const model = new UserModel(req.body);
         // Hash Password
-        model.password = passwordHash.generate(model.password).then(hashed => {
-          console.log(hashed);
-        });
+        model.password = passwordHash.generate(model.password);
+        console.log(model);
 
         model.save().then(doc => {
           if (!doc || doc.length == 0) {
