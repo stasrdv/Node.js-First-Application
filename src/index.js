@@ -1,20 +1,20 @@
-const server = require("express");
+let expres = require("express");
 
-const app = express();
+let app = expres();
 
-const path = require("path");
+let path = require("path");
 
-const bodyParser = require("body-parser");
+let bodyParser = require("body-parser");
 
 // Routes
-const registerRoute = require("./routes/register");
+let loginRoute = require("./routes/register");
 
 // body-parser
 app.use(bodyParser.json());
 // apply route tp app
-app.use(registerRoute);
+app.use(loginRoute);
 
-app.use(server.static("public"));
+app.use(expres.static("public"));
 
 // Handler for 404 - Not found
 app.use((req, res, next) => {

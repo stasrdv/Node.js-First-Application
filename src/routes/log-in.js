@@ -1,23 +1,30 @@
-const LoginModel = require("../models/register.model");
+const RegisterModel = require("../models/users.model");
 const express = require("express");
 const router = express.Router();
+var passwordHash = require("password-hash");
 
 // Create a new customer
 router.post("/register", (req, res) => {
   if (!req.body) {
     return res.status(400).send("Request body is empty");
   }
+
   // check if user already exists
-  LoginModel.findOne({
+  RegisterModel.findOne({
     email: req.body.email
   })
     .then(doc => {
+      // if user exists return error message
       if (doc) {
         res
           .status(400)
           .send(`The email adress ${doc.email} is already in use. `);
+        // create new user
       } else {
-        let model = new LoginModel(req.body);
+        const model = new RegisterModel(req.body);
+        // Hash Password
+        model.password = passwordHash.generate(model.password);
+
         model.save().then(doc => {
           if (!doc || doc.length == 0) {
             return res.status(500).send(doc);
