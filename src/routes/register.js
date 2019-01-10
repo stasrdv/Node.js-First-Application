@@ -27,7 +27,7 @@ router.post("/register", (req, res) => {
           if (!doc || doc.length == 0) {
             return res.status(500).send(doc);
           } else {
-            return res.status(201).send(doc.email);
+            return res.status(201).json(`${doc.email}`);
           }
         });
       }
