@@ -6,7 +6,10 @@ const database = "sampledb";
 const user = "stasru";
 const password = "fZsMGZXQMx8FCT";
 
-mongoose.connect(`mongodb://${user}:${password}@${serverName}/${database}`);
+mongoose.connect(
+  `mongodb://${user}:${password}@${serverName}/${database}`,
+  { useNewUrlParser: true }
+);
 
 const UsersSchema = new mongoose.Schema({
   email: {

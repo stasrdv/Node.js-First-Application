@@ -1,7 +1,7 @@
 const UserModel = require("../models/users.model");
 const express = require("express");
 const router = express.Router();
-var passwordHash = require("password-hash");
+const bcrypt = require("bcrypt");
 
 // POST create new Account
 router.post("/register", (req, res) => {
@@ -22,13 +22,17 @@ router.post("/register", (req, res) => {
       } else {
         const model = new UserModel(req.body);
         // Hash Password
-        model.password = passwordHash.generate(model.password);
-        model.save().then(doc => {
-          if (!doc || doc.length == 0) {
-            return res.status(500).send(doc);
-          } else {
-            return res.status(201).json(`${doc.email}`);
-          }
+        bcrypt.genSalt(10, function(err, salt) {
+          bcrypt.hash(model.password, salt, function(err, hash) {
+            model.password = hash;
+            model.save().then(doc => {
+              if (!doc || doc.length == 0) {
+                return res.status(500).send(doc);
+              } else {
+                return res.status(201).json(`${doc.email}`);
+              }
+            });
+          });
         });
       }
     })
