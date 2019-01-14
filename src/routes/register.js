@@ -15,21 +15,29 @@ router.post("/register", (req, res) => {
     .then(doc => {
       // if user exists return error message
       if (doc) {
-        res
-          .status(400)
-          .send(`The email adress ${doc.email} is already in use. `);
+        const response = Object.assign(
+          { success: false },
+          { payload: `The email adress ${doc.email} is already in use. ` }
+        );
+        res.status(400).json(response);
         // create new user
       } else {
         const model = new UserModel(req.body);
         // Hash Password
-        bcrypt.genSalt(10, function(err, salt) {
-          bcrypt.hash(model.password, salt, function(err, hash) {
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(model.password, salt, (err, hash) => {
+            if (err) throw err;
+
             model.password = hash;
             model.save().then(doc => {
               if (!doc || doc.length == 0) {
                 return res.status(500).send(doc);
               } else {
-                return res.status(201).json(`${doc.email}`);
+                const response = Object.assign(
+                  { success: true },
+                  { payload: doc.id }
+                );
+                return res.status(201).json(response);
               }
             });
           });
