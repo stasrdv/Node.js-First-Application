@@ -11,6 +11,9 @@ let getItems = require("./routes/items");
 
 let app = expres();
 
+// cors
+app.use(cors());
+
 // BodyParser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -24,10 +27,6 @@ app.use(
 );
 // Apply routes
 app.use(loginRoute, registerRoute, getItems);
-
-// cors
-app.use(cors());
-// apply route tp app
 
 // Handler for 404 - Not found
 app.use((req, res, next) => {
