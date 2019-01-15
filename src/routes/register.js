@@ -16,11 +16,10 @@ router.post("/register", (req, res) => {
     .then(doc => {
       // if user exists return error message
       if (doc) {
-        const response = Object.assign(
-          { success: false },
-          { payload: `The email adress ${doc.email} is already in use. ` }
-        );
-        res.status(400).json(response);
+        res.status(200).json({
+          token: "",
+          error: `The email adress ${doc.email} is already in use.`
+        });
         // create new user
       } else {
         const model = new UserModel(req.body);
@@ -28,7 +27,6 @@ router.post("/register", (req, res) => {
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(model.password, salt, (err, hash) => {
             if (err) throw err;
-
             model.password = hash;
             model.save().then(user => {
               if (!user || user.length == 0) {
@@ -38,7 +36,10 @@ router.post("/register", (req, res) => {
                 const token = jwt.sign({ userID: user.id }, "i31GOVwz5K0W", {
                   expiresIn: "90d"
                 });
-                return res.status(201).json({ token });
+                return res.status(201).json({
+                  token,
+                  error: ``
+                });
               }
             });
           });

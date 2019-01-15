@@ -15,9 +15,10 @@ router.post("/auth", (req, res) => {
   })
     .then(user => {
       if (!user) {
-        return res
-          .status(400)
-          .send(`Couldn't find your account ${req.body.email}`);
+        return res.status(200).json({
+          token: "",
+          error: `Couldn't find User with email adress  ${req.body.email}`
+        });
       } else {
         bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
           if (err) throw err;
