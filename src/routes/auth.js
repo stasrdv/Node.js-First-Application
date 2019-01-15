@@ -2,7 +2,6 @@ const UserModel = require("../models/users.model");
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-
 const jwt = require("jsonwebtoken");
 
 // POST
@@ -26,8 +25,11 @@ router.post("/auth", (req, res) => {
             expiresIn: "90d"
           });
           return isMatch
-            ? res.status(200).json({ token })
-            : res.status(401).json();
+            ? res.status(200).json({ token, error: "" })
+            : res.status(200).json({
+                token: "",
+                error: `Invalid password for user ${user.email}`
+              });
         });
       }
     })

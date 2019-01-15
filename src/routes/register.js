@@ -2,6 +2,7 @@ const UserModel = require("../models/users.model");
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 // POST create new Account
 router.post("/register", (req, res) => {
@@ -29,15 +30,15 @@ router.post("/register", (req, res) => {
             if (err) throw err;
 
             model.password = hash;
-            model.save().then(doc => {
-              if (!doc || doc.length == 0) {
-                return res.status(500).send(doc);
+            model.save().then(user => {
+              if (!user || user.length == 0) {
+                return res.status(500).send(user);
               } else {
-                const response = Object.assign(
-                  { success: true },
-                  { payload: doc.id }
-                );
-                return res.status(201).json(response);
+                if (err) throw err;
+                const token = jwt.sign({ userID: user.id }, "i31GOVwz5K0W", {
+                  expiresIn: "90d"
+                });
+                return res.status(201).json({ token });
               }
             });
           });

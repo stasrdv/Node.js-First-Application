@@ -18,7 +18,8 @@ app.use(expres.static("public"));
 
 app.use(
   expressJwt({ secret: "i31GOVwz5K0W" }).unless({
-    path: ["/auth"]
+    path: ["/auth", "/register"]
+    // path: ["/register"]
   })
 );
 // Apply routes
@@ -30,11 +31,14 @@ app.use(cors());
 
 // Handler for 404 - Not found
 app.use((req, res, next) => {
-  res.status(404).send("Not Found");
+  res.status(404).json("Not Found");
 });
-// Handler for Error 500
+// Handler for Error
 app.use((err, req, res, next) => {
-  res.sendFile(path.join(__dirname, "../public/500.html"));
+  if (err) {
+    res.status(err.status).json(err.code);
+  }
+  // res.sendFile(path.join(__dirname, "../public/500.html"));
 });
 
 const PORT = process.env.PORT || 3000;
