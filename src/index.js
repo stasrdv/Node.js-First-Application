@@ -1,6 +1,5 @@
 let expres = require("express");
 let cors = require("cors");
-let path = require("path");
 let bodyParser = require("body-parser");
 const expressJwt = require("express-jwt");
 
@@ -8,6 +7,7 @@ const expressJwt = require("express-jwt");
 let registerRoute = require("./routes/register");
 let loginRoute = require("./routes/auth");
 let getItems = require("./routes/items");
+// let verify = require("./routes/verify");
 
 let app = expres();
 
@@ -21,7 +21,7 @@ app.use(expres.static("public"));
 
 app.use(
   expressJwt({ secret: "i31GOVwz5K0W" }).unless({
-    path: ["/auth", "/register"]
+    path: ["/auth", "/register", "/verify", "/"]
   })
 );
 // Apply routes
