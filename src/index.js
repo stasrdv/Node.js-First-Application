@@ -21,7 +21,7 @@ app.use(expres.static("public"));
 
 app.use(
   expressJwt({ secret: "i31GOVwz5K0W" }).unless({
-    path: ["/auth", "/register", "/verify", "/"]
+    path: ["/auth", "/register", "/verify"]
   })
 );
 // Apply routes
