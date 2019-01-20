@@ -19,11 +19,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expres.static("public"));
 
-app.use(
-  expressJwt({ secret: "i31GOVwz5K0W" }).unless({
-    path: ["/auth", "/register", "/verify"]
-  })
-);
+// app.use(
+//   expressJwt({ secret: "i31GOVwz5K0W" }).unless({
+//     path: ["/auth", "/register", "/verify"]
+//   })
+// );
 // Apply routes
 app.use(loginRoute, registerRoute, getItems);
 
