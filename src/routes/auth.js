@@ -20,7 +20,6 @@ router.post("/auth", (req, res) => {
           error: `Couldn't find User with email adress  ${req.body.email}`
         });
       } else {
-        console.log("Hellllllopooooo");
         bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
           if (err) throw err;
           const token = jwt.sign({ userID: user.id }, "i31GOVwz5K0W", {
