@@ -22,6 +22,9 @@ app.use(expres.static("public"));
 app.use("/entry", (req, res) => {
   res.redirect("/");
 });
+app.use("/home", (req, res) => {
+  res.redirect("/");
+});
 
 app.use(
   expressJwt({ secret: "i31GOVwz5K0W" }).unless({
@@ -30,6 +33,12 @@ app.use(
 );
 // Apply routes
 app.use(loginRoute, registerRoute, getItems);
+
+// Handler for 404 - Not found
+// app.use((req, res, next) => {
+//   res.status(404).json("Not Found");
+// });
+// Handler for Error
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.info(`Server has started on ${PORT}`));
