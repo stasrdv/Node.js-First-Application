@@ -23,7 +23,7 @@ app.get("/*", (req, res) => {
 });
 app.use(
   expressJwt({ secret: "i31GOVwz5K0W" }).unless({
-    path: ["/auth", "/register"]
+    path: ["/auth", "/register", "/verify"]
   })
 );
 
