@@ -31,10 +31,13 @@ app.use(loginRoute, registerRoute, getItems, getUsers);
 app.use((err, req, res, next) => {
   if (req.path == "/entry") {
     res.redirect("/");
+  } else {
+    if (err) {
+      console.log(err);
+      res.send(err.status).json(err.code);
+    }
   }
-  // if (err) {
-  //   res.send(err.status).json(err.code);
-  // }
+
   // res.sendFile(path.join(__dirname, "../public/500.html"));
 });
 
