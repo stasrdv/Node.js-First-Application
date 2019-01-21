@@ -18,6 +18,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expres.static("public"));
 
+app.get("/*", (req, res) => {
+  res.redirect("/");
+});
+
 app.use(
   expressJwt({ secret: "i31GOVwz5K0W" }).unless({
     path: ["/auth", "/register", "/verify"]
@@ -31,7 +35,6 @@ app.use((err, req, res, next) => {
   if (err) {
     res.send(err.status).json(err.code);
   }
-  // res.sendFile(path.join(__dirname, "../public/500.html"));
 });
 
 const PORT = process.env.PORT || 3000;
