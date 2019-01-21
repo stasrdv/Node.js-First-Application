@@ -7,6 +7,7 @@ const expressJwt = require("express-jwt");
 let registerRoute = require("./routes/register");
 let loginRoute = require("./routes/auth");
 let getItems = require("./routes/items");
+let getUsers = require("./routes/users");
 
 let app = expres();
 
@@ -18,23 +19,23 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expres.static("public"));
 
-app.get("/*", (req, res) => {
-  res.redirect("/");
-});
-
 app.use(
   expressJwt({ secret: "i31GOVwz5K0W" }).unless({
     path: ["/auth", "/register", "/verify"]
   })
 );
 // Apply routes
-app.use(loginRoute, registerRoute, getItems);
+app.use(loginRoute, registerRoute, getItems, getUsers);
 
 // Handler for Error
 app.use((err, req, res, next) => {
-  if (err) {
-    res.send(err.status).json(err.code);
+  if (req.path == "/entry") {
+    res.redirect("/");
   }
+  // if (err) {
+  //   res.send(err.status).json(err.code);
+  // }
+  // res.sendFile(path.join(__dirname, "../public/500.html"));
 });
 
 const PORT = process.env.PORT || 3000;
