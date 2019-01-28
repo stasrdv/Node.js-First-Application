@@ -25,8 +25,9 @@ router.post("/auth", (req, res) => {
           const token = jwt.sign({ userID: user.id }, "i31GOVwz5K0W", {
             expiresIn: "90d"
           });
+          const userName = user.email.replace(/^(.+)@(.+)$/g, "$1");
           return isMatch
-            ? res.status(200).json({ token, error: "" })
+            ? res.status(200).json({ token, error: "", userName })
             : res.status(200).json({
                 token: "",
                 error: `Invalid password for user ${user.email}`
