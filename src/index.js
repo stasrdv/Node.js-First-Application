@@ -21,27 +21,27 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expres.static("public"));
 
-// app.use(
-//   expressJwt({ secret: "i31GOVwz5K0W" }).unless({
-//     path: ["/auth", "/register", "/verify"]
-//   })
-// );
+app.use(
+  expressJwt({ secret: "i31GOVwz5K0W" }).unless({
+    path: ["/auth", "/register", "/verify"]
+  })
+);
 
 // Apply routes
 app.use(loginRoute, registerRoute, getItems, getUsers);
 
 // Handler for Error
-// app.use((err, req, res, next) => {
-//   if (req.path == "/entry") {
-//     res.redirect("/");
-//   } else {
-//     if (err) {
-//       res.res.sendStatus(err.status).json(err.code);
-//     }
-//   }
+app.use((err, req, res, next) => {
+  if (req.path == "/entry") {
+    res.redirect("/");
+  } else {
+    if (err) {
+      res.res.sendStatus(err.status).json(err.code);
+    }
+  }
 
-//   // res.sendFile(path.join(__dirname, "../public/500.html"));
-// });
+  // res.sendFile(path.join(__dirname, "../public/500.html"));
+});
 
 io.on("connection", socket => {
   console.log("user connected");
@@ -53,7 +53,8 @@ io.on("connection", socket => {
     io.emit("message", {
       type: "new-message",
       text: message.text,
-      userName: message.userName
+      userName: message.userName,
+      currentTime: message.currentTime
     });
   });
 });
