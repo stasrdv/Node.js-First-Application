@@ -2,6 +2,7 @@ const expres = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const expressJwt = require("express-jwt");
+var onlineUsers = [];
 
 // Routes
 let registerRoute = require("./routes/register");
@@ -44,9 +45,26 @@ app.use((err, req, res, next) => {
 });
 
 io.on("connection", socket => {
-  console.log("user connected");
-  socket.on("disconnect", function() {
-    console.log("user disconnected");
+  const _user = socket.request._query;
+  //unique array of online
+  let found = onlineUsers.find(user => user["userID"] === _user["userID"]);
+  if (!found) {
+    onlineUsers.push(_user);
+  }
+  io.emit("onlineUsers", {
+    type: "onlineUsers",
+    onlineUsers: onlineUsers
+  });
+
+  socket.on("disconnect", () => {
+    const _index = onlineUsers.findIndex(user => {
+      user.userID == _user["userID"];
+    });
+    onlineUsers.splice(_index, 1);
+    io.emit("onlineUsers", {
+      type: "onlineUsers",
+      onlineUsers: onlineUsers
+    });
   });
 
   socket.on("add-message", message => {
@@ -54,6 +72,7 @@ io.on("connection", socket => {
       type: "new-message",
       text: message.text,
       userName: message.userName,
+      userID: message.userID,
       currentTime: message.currentTime
     });
   });

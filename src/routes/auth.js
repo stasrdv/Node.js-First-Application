@@ -20,14 +20,16 @@ router.post("/auth", (req, res) => {
           error: `Couldn't find User with email adress  ${req.body.email}`
         });
       } else {
+        connectedUserID = user.id;
         bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
           if (err) throw err;
           const token = jwt.sign({ userID: user.id }, "i31GOVwz5K0W", {
             expiresIn: "90d"
           });
           const userName = user.email.replace(/^(.+)@(.+)$/g, "$1");
+          const userID = user.id;
           return isMatch
-            ? res.status(200).json({ token, error: "", userName })
+            ? res.status(200).json({ token, error: "", userName, userID })
             : res.status(200).json({
                 token: "",
                 error: `Invalid password for user ${user.email}`
