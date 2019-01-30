@@ -37,7 +37,7 @@ app.use((err, req, res, next) => {
     res.redirect("/");
   } else {
     if (err) {
-      res.res.sendStatus(err.status).json(err.code);
+      res.sendStatus(err.status).json(err.code);
     }
   }
 
@@ -54,6 +54,13 @@ io.on("connection", socket => {
   io.emit("onlineUsers", {
     type: "onlineUsers",
     onlineUsers: onlineUsers
+  });
+
+  socket.on("typing", _user => {
+    io.emit("typing", {
+      type: "typing",
+      user: _user
+    });
   });
 
   socket.on("disconnect", () => {
