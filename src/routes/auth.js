@@ -9,7 +9,6 @@ router.post("/auth", (req, res) => {
   if (!req.body) {
     return res.status(400).send("Request body is empty");
   }
-
   UserModel.findOne({
     email: req.body.email
   })
@@ -20,21 +19,27 @@ router.post("/auth", (req, res) => {
           error: `Couldn't find User with email adress  ${req.body.email}`
         });
       } else {
-        connectedUserID = user.id;
-        bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
-          if (err) throw err;
-          const token = jwt.sign({ userID: user.id }, "i31GOVwz5K0W", {
-            expiresIn: "90d"
+        if (!user.isVerified) {
+          return res.status(200).json({
+            token: "",
+            error: `Please verify email  ${req.body.email}`
           });
-          const userName = user.email.replace(/^(.+)@(.+)$/g, "$1");
-          const userID = user.id;
-          return isMatch
-            ? res.status(200).json({ token, error: "", userName, userID })
-            : res.status(200).json({
-                token: "",
-                error: `Invalid password for user ${user.email}`
-              });
-        });
+        } else {
+          bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
+            if (err) throw err;
+            const token = jwt.sign({ userID: user.id }, "i31GOVwz5K0W", {
+              expiresIn: "90d"
+            });
+            const userName = user.email.replace(/^(.+)@(.+)$/g, "$1");
+            const userID = user.id;
+            return isMatch
+              ? res.status(200).json({ token, error: "", userName, userID })
+              : res.status(200).json({
+                  token: "",
+                  error: `Invalid password for user ${user.email}`
+                });
+          });
+        }
       }
     })
     .catch(err => {
