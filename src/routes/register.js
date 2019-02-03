@@ -69,16 +69,14 @@ router.post("/register", (req, res) => {
 router.get("/verify", (req, res) => {
   UserModel.findOneAndUpdate(
     { _id: req.query.id },
-    { $set: { isVerified: true } },
-    { new: true },
-    err => {
-      if (err) {
-        res.end("<h1>Bad Request</h1>");
-      } else {
-        res.redirect("/entry");
-      }
+    { $set: { isVerified: true } }
+  ).then(updatedDoc => {
+    if (updatedDoc) {
+      res.redirect("/entry");
+    } else {
+      res.end("<h1>Bad Request</h1>");
     }
-  );
+  });
 });
 module.exports = router;
 
