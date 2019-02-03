@@ -59,7 +59,14 @@ io.on("connection", socket => {
   socket.on("typing", _user => {
     io.emit("typing", {
       type: "typing",
-      user: _user
+      _user
+    });
+  });
+
+  socket.on("stopped-typing", _user => {
+    io.emit("stopped-typing", {
+      type: "stopped-typing",
+      _user
     });
   });
 
