@@ -1,10 +1,8 @@
 const UserModel = require("../models/users.model");
 const express = require("express");
 const router = express.Router();
-let path = require("path");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
 const smtpTransport = nodemailer.createTransport({
   service: "Gmail",
@@ -31,7 +29,7 @@ router.post("/register", (req, res) => {
         });
       } else {
         // Create new user (isVerified will be false till verification email confirmed)
-        const newUser = new UserModel(req.body);
+        let newUser = new UserModel(req.body);
         // Hash Password
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(newUser.password, salt, (err, hash) => {
