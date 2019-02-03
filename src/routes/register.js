@@ -35,6 +35,7 @@ router.post("/register", (req, res) => {
           bcrypt.hash(newUser.password, salt, (err, hash) => {
             if (err) throw err;
             newUser.password = hash;
+            console.log(`Hashed original + ${newUser}`);
             newUser.save().then(newUser => {
               host = req.get("host");
               link = "http://" + req.get("host") + "/verify?id=" + newUser._id;
@@ -67,9 +68,11 @@ router.post("/register", (req, res) => {
 router.get("/verify", (req, res) => {
   UserModel.findOneAndUpdate(
     { _id: req.query.id },
-    { $set: { isVerified: true } }
+    { $set: { isVerified: true } },
+    { new: true }
   ).then(updatedDoc => {
     if (updatedDoc) {
+      console.log(`Hashed After verify  + ${updatedDoc}`);
       res.redirect("/entry");
     } else {
       res.end("<h1>Bad Request</h1>");
@@ -78,4 +81,6 @@ router.get("/verify", (req, res) => {
 });
 module.exports = router;
 
-function sendeVerification(req, userID) {}
+// original $2b$10$umXvOnC2RmyA6nKnd0qL.u39VDj8idehbZU4MjTUu5Q9tH6WOEhtO
+// verify $2b$10$umXvOnC2RmyA6nKnd0qL.u39VDj8idehbZU4MjTUu5Q9tH6WOEhtO
+//
