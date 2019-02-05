@@ -20,6 +20,7 @@
     "express-flash": "0.0.2",
     "express-jwt": "^5.3.1",
     "express-session": "^1.15.6",
+    "js-to-ts-converter": "^0.16.2",
     "jsonwebtoken": "^8.4.0",
     "mongoose": "5.4.2",
     "nodemailer": "^5.1.1",
