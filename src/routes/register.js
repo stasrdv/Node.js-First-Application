@@ -3,6 +3,12 @@ const express = require("express");
 const router = express.Router();
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
+const fs = require("fs");
+var promisedHandlebars = require("promised-handlebars");
+var Q = require("q");
+var Handlebars = promisedHandlebars(require("handlebars"), {
+  Promise: Q.Promise
+});
 
 const smtpTransport = nodemailer.createTransport({
   service: "Gmail",
@@ -11,6 +17,24 @@ const smtpTransport = nodemailer.createTransport({
     pass: "fZsMGZXQMx8FCT"
   }
 });
+
+Handlebars.registerHelper("helper", function(value) {
+  return Q.delay(100).then(function() {
+    return value;
+  });
+});
+
+// read template file
+var readHTMLFile = function(path, callback) {
+  fs.readFile(path, { encoding: "utf-8" }, function(err, html) {
+    if (err) {
+      throw err;
+      callback(err);
+    } else {
+      callback(null, html);
+    }
+  });
+};
 
 // Register
 router.post("/register", (req, res) => {
@@ -35,25 +59,37 @@ router.post("/register", (req, res) => {
           bcrypt.hash(newUser.password, salt, (err, hash) => {
             if (err) throw err;
             newUser.password = hash;
-            console.log(`Hashed original + ${newUser}`);
             newUser.save().then(newUser => {
+              // Generate confirm email
               host = req.get("host");
               link = "http://" + req.get("host") + "/verify?id=" + newUser._id;
-              mailOptions = {
-                to: req.body.email,
-                subject: "Please confirm your Email adress",
-                html:
-                  "Hello,<br> Please click on the link to verify your email adress.<br><a href=" +
-                  link +
-                  ">Click here to verify</a>"
-              };
-              smtpTransport.sendMail(mailOptions, error => {
-                if (error) {
-                  res.end("error");
-                } else {
-                  res.json(`Verification email Sent to ${req.body.email}`);
+              username = newUser.email.replace(/^(.+)@(.+)$/g, "$1");
+              readHTMLFile(
+                __dirname + "../../../public/assets/templates/confirm.html",
+                (err, html) => {
+                  if (err) throw err;
+                  var template = Handlebars.compile(html);
+                  template({
+                    user: username,
+                    link: link
+                  }).then(template => {
+                    (mailOptions = {
+                      to: req.body.email,
+                      subject: "Please confirm your Email adress",
+                      html: template
+                    }),
+                      smtpTransport.sendMail(mailOptions, error => {
+                        if (error) {
+                          res.end("error");
+                        } else {
+                          res.json(
+                            `Verification email Sent to ${req.body.email}`
+                          );
+                        }
+                      });
+                  });
                 }
-              });
+              );
             });
           });
         });
@@ -72,15 +108,11 @@ router.get("/verify", (req, res) => {
     { new: true }
   ).then(updatedDoc => {
     if (updatedDoc) {
-      console.log(`Hashed After verify  + ${updatedDoc}`);
       res.redirect("/entry");
     } else {
       res.end("<h1>Bad Request</h1>");
     }
   });
 });
-module.exports = router;
 
-// original $2b$10$umXvOnC2RmyA6nKnd0qL.u39VDj8idehbZU4MjTUu5Q9tH6WOEhtO
-// verify $2b$10$umXvOnC2RmyA6nKnd0qL.u39VDj8idehbZU4MjTUu5Q9tH6WOEhtO
-//
+module.exports = router;
