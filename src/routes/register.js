@@ -65,7 +65,7 @@ router.post("/register", (req, res) => {
               link = "http://" + req.get("host") + "/verify?id=" + newUser._id;
               username = newUser.email.replace(/^(.+)@(.+)$/g, "$1");
               readHTMLFile(
-                __dirname + "../../../public/assets/templates/confirm.html",
+                "./public/assets/templates/confirm.html",
                 (err, html) => {
                   if (err) throw err;
                   var template = Handlebars.compile(html);
@@ -95,6 +95,7 @@ router.post("/register", (req, res) => {
         });
       }
     })
+
     .catch(err => {
       res.status(500).json(err);
     });

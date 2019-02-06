@@ -3,6 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const expressJwt = require("express-jwt");
 var onlineUsers = [];
+const path = require("path");
 
 // Routes
 let registerRoute = require("./routes/register");
@@ -30,6 +31,7 @@ app.use(
 
 // Apply routes
 app.use(loginRoute, registerRoute, getItems, getUsers);
+app.use("/public", expres.static(path.join(__dirname, "public")));
 
 // Handler for Error
 app.use((err, req, res, next) => {
