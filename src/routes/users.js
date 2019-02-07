@@ -7,7 +7,6 @@ router.get("/users", (req, res) => {
 });
 
 module.exports = router;
-
 const users = [
   {
     id: 1,

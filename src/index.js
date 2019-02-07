@@ -8,8 +8,8 @@ const path = require("path");
 // Routes
 let registerRoute = require("./routes/register");
 let loginRoute = require("./routes/auth");
-let getItems = require("./routes/items");
 let getUsers = require("./routes/users");
+let home = require("./routes/home");
 
 const app = expres();
 const http = require("http").Server(app);
@@ -30,7 +30,7 @@ app.use(
 );
 
 // Apply routes
-app.use(loginRoute, registerRoute, getItems, getUsers);
+app.use(loginRoute, registerRoute, getUsers, home);
 app.use("/public", expres.static(path.join(__dirname, "public")));
 
 // Handler for Error
