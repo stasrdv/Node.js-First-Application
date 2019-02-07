@@ -12,8 +12,8 @@ let getUsers = require("./routes/users");
 let home = require("./routes/home");
 
 const app = expres();
-const http = require("http").Server(app);
-const io = require("socket.io")(http);
+const https = require("https").Server(app);
+const io = require("socket.io")(https);
 
 // cors
 app.use(cors());
@@ -42,8 +42,6 @@ app.use((err, req, res, next) => {
       res.sendStatus(err.status).json(err.code);
     }
   }
-
-  // res.sendFile(path.join(__dirname, "../public/500.html"));
 });
 
 io.on("connection", socket => {
@@ -95,4 +93,4 @@ io.on("connection", socket => {
 });
 
 const PORT = process.env.PORT || 3000;
-http.listen(PORT, () => console.info(`Server has started on ${PORT}`));
+https.listen(PORT, () => console.info(`Server has started on ${PORT}`));
