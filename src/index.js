@@ -12,8 +12,8 @@ let getUsers = require("./routes/users");
 let home = require("./routes/home");
 
 const app = expres();
-const https = require("https").Server(app);
-const io = require("socket.io")(https);
+const http = require("http").Server(app);
+const io = require("socket.io")(http);
 
 // cors
 app.use(cors());
@@ -93,4 +93,4 @@ io.on("connection", socket => {
 });
 
 const PORT = process.env.PORT || 3000;
-https.listen(PORT, () => console.info(`Server has started on ${PORT}`));
+http.listen(PORT, () => console.info(`Server has started on ${PORT}`));
